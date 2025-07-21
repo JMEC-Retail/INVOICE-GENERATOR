@@ -8,6 +8,7 @@ from fastapi.responses import FileResponse, Response
 
 RAW_DIR = 'invoice_data/raw'
 PDF_DIR = 'invoice_data/final'
+TEMPLATE_PATH = 'invoice_template/modern_invoice.html'
 
 os.makedirs(RAW_DIR, exist_ok=True)
 os.makedirs(PDF_DIR, exist_ok=True)
@@ -29,45 +30,25 @@ def generate_pdf(invoice_data: dict, invoice_id: str) -> str:
     return pdf_path
 
 def generate_html(invoice: dict) -> str:
+    with open(TEMPLATE_PATH) as file:
+        template = file.read()
+
     items_html = "".join([
         f"<tr><td>{item['description']}</td><td>{item['quantity']}</td><td>${item['unit_price']:.2f}</td><td>${item['quantity'] * item['unit_price']:.2f}</td></tr>"
         for item in invoice["line_items"]
     ])
     total = sum(item['quantity'] * item['unit_price'] for item in invoice["line_items"])
 
-    html = f"""
-    <html>
-    <head>
-        <style>
-            body {{ font-family: Arial, sans-serif; margin: 40px; }}
-            table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
-            th, td {{ border: 1px solid #ddd; padding: 8px; }}
-            th {{ background-color: #f2f2f2; }}
-        </style>
-    </head>
-    <body>
-        <h1>Invoice</h1>
-        <p><strong>Customer:</strong> {invoice['customer_name']}<br>
-        <strong>Address:</strong> {invoice['customer_address']}<br>
-        <strong>Invoice Date:</strong> {invoice['invoice_date']}<br>
-        <strong>Due Date:</strong> {invoice['due_date']}</p>
-
-        <table>
-            <thead>
-                <tr><th>Description</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr>
-            </thead>
-            <tbody>
-                {items_html}
-            </tbody>
-            <tfoot>
-                <tr><td colspan="3"><strong>Grand Total</strong></td><td><strong>${total:.2f}</strong></td></tr>
-            </tfoot>
-        </table>
-
-        <p>{invoice.get('notes', '')}</p>
-    </body>
-    </html>
-    """
+    html = template.format(
+        company_info=invoice["company_info"],
+        customer_name=invoice["customer_name"],
+        customer_address=invoice["customer_address"],
+        invoice_date=invoice["invoice_date"],
+        due_date=invoice["due_date"],
+        line_items=items_html,
+        total=f"${total:.2f}",
+        notes=invoice.get("notes", "")
+    )
     return html
 
 def create_download_token(invoice_id: str) -> str:

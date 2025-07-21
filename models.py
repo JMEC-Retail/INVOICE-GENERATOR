@@ -8,6 +8,7 @@ class LineItem(BaseModel):
     unit_price: float
 
 class Invoice(BaseModel):
+    company_info: str
     customer_name: str
     customer_address: str
     invoice_date: date
