@@ -5,7 +5,6 @@ import uuid
 
 app = FastAPI()
 
-
 @app.post("/invoices", response_model=InvoiceResponse)
 async def create_invoice(invoice: Invoice):
     invoice_id = str(uuid.uuid4())
@@ -19,7 +18,6 @@ async def create_invoice(invoice: Invoice):
         pdf_path=pdf_path
     )
 
-
 @app.get("/invoices/{invoice_id}")
 async def get_invoice(invoice_id: str):
     data = load_invoice(invoice_id)
@@ -30,7 +28,6 @@ async def get_invoice(invoice_id: str):
         "invoice_id": invoice_id,
         "data": data
     }
-
 
 @app.get("/invoices")
 async def get_all_invoices():
