@@ -1,0 +1,46 @@
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body {{ font-family: Arial, sans-serif; margin: 40px; }}
+    table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
+    th, td {{ border: 1px solid #ddd; padding: 8px; }}
+    th {{ background-color: #f2f2f2; }}
+  </style>
+</head>
+<body>
+  <h1>Invoice #{invoice_id}</h1>
+  <p><strong>Amazon Order ID:</strong> {amazon_order_id}</p>
+  <p><strong>Purchase Date:</strong> {purchase_date}</p>
+  <p><strong>Status:</strong> {order_status}</p>
+  <p><strong>Fulfillment Channel:</strong> {fulfillment_channel}</p>
+  <p><strong>Sales Channel:</strong> {sales_channel}</p>
+  <p><strong>Marketplace:</strong> {marketplace_id}</p>
+
+  <h2>Buyer</h2>
+  <p>{buyer_name} {buyer_email}</p>
+
+  <h2>Shipping Address</h2>
+  <p>{shipping_address}</p>
+
+  <h2>Items</h2>
+  <table>
+    <thead>
+      <tr><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th></tr>
+    </thead>
+    <tbody>
+      {line_items}
+    </tbody>
+  </table>
+
+  <h2>Totals</h2>
+  <p>Subtotal: {subtotal}</p>
+  <p>Tax: {tax}</p>
+  <p>Shipping: {shipping}</p>
+  <p>Discounts: {discounts}</p>
+  <p><strong>Grand Total: {grand_total}</strong></p>
+
+  <p><em>{notes}</em></p>
+  <p><small>Generated at {generated_at}</small></p>
+</body>
+</html>
