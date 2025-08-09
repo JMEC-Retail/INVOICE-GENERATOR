@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Body
+from fastapi.middleware.cors import CORSMiddleware
 from models import InvoicePayload, InvoiceResponse
 from invoice_service import (
     save_invoice_json, generate_pdf, load_invoice, list_invoices,
@@ -7,7 +8,13 @@ from invoice_service import (
 import uuid
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/invoices", response_model=InvoiceResponse)
 async def create_invoice(body: dict = Body(...)):
